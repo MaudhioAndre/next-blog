@@ -28,9 +28,6 @@ masks.Time = "d mmmm yyyy";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import 'react-lazy-load-image-component/src/effects/blur.css';
-
 export default function Home(props) {
   const [blog, setBlog] = useState(props.blog || null);
   const [cariKonten, setCariKonten] = useState("");
@@ -131,6 +128,12 @@ export default function Home(props) {
     }
   }
 
+  function loadImageCS(index){
+    let newBlog = [...blog];
+    newBlog[index]['loadImage'] = 1;
+    setBlog(newBlog);
+  }
+
   return (
     <>
       <div className={styles.container}>
@@ -211,16 +214,25 @@ export default function Home(props) {
                   .map((data, index) => (
                     <div key={index} className={styles.divContent}>
                       <div className={styles.imgContainer}>
-                        {/* <Image
-                          className={styles.imgContent}
+                        {data.loadImage == 0 ? (
+                          <div className={styles.loadContainer}>
+                          <div className="loader"></div>
+                          </div>
+                        ) : (
+                          <Image
+                            className={styles.imgContent}
+                            layout="fill"
+                            src={data.Foto}
+                          />
+                        )}
+                        <Image
+                          className={styles.imgContent2}
                           layout="fill"
                           src={data.Foto}
-                        /> */}
-                        <LazyLoadImage src={data.Foto}
-                          // width={600} height={400}
-                          alt="Image Alt"
-                          className={styles.imgContent}
-                          effect="blur"
+                          onLoad={() => {
+                            console.log(`${data.Foto} is loaded`);
+                            loadImageCS(index);
+                          }}
                         />
                       </div>
                       <div className={styles.divDesc}>
