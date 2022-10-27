@@ -110,6 +110,24 @@ export default function Home(props) {
     }
   };
 
+  function cekNullData() {
+    if (blog == []) {
+      return true;
+    } else {
+      if (
+        blog.filter((filter) =>
+          cariKonten == ""
+            ? true
+            : filter.Judul.includes(cariKonten.toLowerCase())
+        ).length > 0
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
   return (
     <>
       <div className={styles.container}>
@@ -123,43 +141,43 @@ export default function Home(props) {
           <div className={styles.divTambah}>
             <div className={styles.title}>BLOG</div>
             <div>
-            <div className={styles.divSettingData2}>
-            <UncontrolledDropdown>
-                <DropdownToggle className={styles.dropSort}>
-                  Urutkan
-                </DropdownToggle>
-                <DropdownMenu className={styles.dropSortMenu}>
-                  <DropdownItem
-                    onClick={() => setTipeSort("terbaru")}
-                    className={styles.dropSortItem}
-                  >
-                    Terbaru
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => setTipeSort("terlama")}
-                    className={styles.dropSortItem}
-                  >
-                    Terlama
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => setTipeSort("az")}
-                    className={styles.dropSortItem}
-                  >
-                    A-Z
-                  </DropdownItem>
-                  <DropdownItem
-                    onClick={() => setTipeSort("za")}
-                    className={styles.dropSortItem}
-                  >
-                    Z-A
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <Link href="/tambah">
-                <button className={styles.btnTambah}>Tambah</button>
-              </Link>
-            </div>
-              
+              <div className={styles.divSettingData2}>
+                <UncontrolledDropdown>
+                  <DropdownToggle className={styles.dropSort}>
+                    Urutkan
+                  </DropdownToggle>
+                  <DropdownMenu className={styles.dropSortMenu}>
+                    <DropdownItem
+                      onClick={() => setTipeSort("terbaru")}
+                      className={styles.dropSortItem}
+                    >
+                      Terbaru
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => setTipeSort("terlama")}
+                      className={styles.dropSortItem}
+                    >
+                      Terlama
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => setTipeSort("az")}
+                      className={styles.dropSortItem}
+                    >
+                      A-Z
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => setTipeSort("za")}
+                      className={styles.dropSortItem}
+                    >
+                      Z-A
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+                <Link href="/tambah">
+                  <button className={styles.btnTambah}>Tambah</button>
+                </Link>
+              </div>
+
               <div className={styles.divSettingData}>
                 <input
                   className={styles.divInputCari}
@@ -175,50 +193,50 @@ export default function Home(props) {
                   className={styles.divIconSearch}
                 />
               </div>
-              
             </div>
           </div>
           <div className={styles.divContainer}>
-            {blog &&
-              blog
-                .filter((filter) =>
-                  cariKonten == ""
-                    ? true
-                    : filter.Judul.includes(cariKonten.toLowerCase())
-                )
-                .sort((a, b) => sortData(a, b))
-                .map((data, index) => (
-                  <div key={index} className={styles.divContent}>
-                    <div className={styles.imgContainer}>
-                      <Image
-                        className={styles.imgContent}
-                        layout="fill"
-                        src={data.Foto}
-                      />
-                    </div>
-                    <div className={styles.divDesc}>
-                      <div className={styles.divJudul}>{data.Judul}</div>
-                      <div className={styles.divInfo}>
-                        <div className={styles.divTime}>
-                          {dateFormat(data.CreatedAt, "Time")}
-                        </div>
-                        <div className={styles.divContainIcon}>
-                          <Link href={`/ubah/${data.Id}`}>
+            {cekNullData()
+              ? "Data Kosong / Tidak Ditemukan"
+              : blog
+                  .filter((filter) =>
+                    cariKonten == ""
+                      ? true
+                      : filter.Judul.includes(cariKonten.toLowerCase())
+                  )
+                  .sort((a, b) => sortData(a, b))
+                  .map((data, index) => (
+                    <div key={index} className={styles.divContent}>
+                      <div className={styles.imgContainer}>
+                        <Image
+                          className={styles.imgContent}
+                          layout="fill"
+                          src={data.Foto}
+                        />
+                      </div>
+                      <div className={styles.divDesc}>
+                        <div className={styles.divJudul}>{data.Judul}</div>
+                        <div className={styles.divInfo}>
+                          <div className={styles.divTime}>
+                            {dateFormat(data.CreatedAt, "Time")}
+                          </div>
+                          <div className={styles.divContainIcon}>
+                            <Link href={`/ubah/${data.Id}`}>
+                              <FontAwesomeIcon
+                                icon={faPen}
+                                className={styles.divIcon}
+                              />
+                            </Link>
                             <FontAwesomeIcon
-                              icon={faPen}
+                              icon={faTrash}
+                              onClick={() => KonfirmHapus(data.Id)}
                               className={styles.divIcon}
                             />
-                          </Link>
-                          <FontAwesomeIcon
-                            icon={faTrash}
-                            onClick={() => KonfirmHapus(data.Id)}
-                            className={styles.divIcon}
-                          />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
           </div>
         </main>
       </div>
@@ -244,10 +262,17 @@ export async function getServerSideProps(context) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/getdatablog`);
     const data = await res.json();
-    const blog = await data.getDataBlog;
-    return {
-      props: { blog },
-    };
+    if ((await data.Error) == 0) {
+      const blog = await data.getDataBlog;
+      return {
+        props: { blog },
+      };
+    } else {
+      const blog = [];
+      return {
+        props: { blog },
+      };
+    }
   } catch (err) {
     return { props: { blog: [] } };
   }
