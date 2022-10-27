@@ -1,0 +1,63 @@
+.divContainer{
+    padding: 7% 13%;
+    /* text-align: center; */
+}
+
+.divTitle{
+    text-align: center;
+    width: 100%;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.divFormGroup{
+    margin-bottom: 30px;
+}
+
+.divLabel{
+    font-size: 17px;
+    margin-bottom: 5px;
+    display: flex;
+    font-weight: 600;
+}
+
+.required{
+    color: red;
+    margin-left: 5px;
+}
+
+.divInput{
+    width: 100%;
+    height: 25px;
+}
+
+.divInputTextarea{
+    width: 100%;
+}
+
+.divInputFile{
+    color: transparent;
+    width: 100px;
+}
+
+.btnSubmit{
+    background-color: #505050;
+    color: white;
+    cursor: pointer;
+    border: unset;
+    border-radius: 5px;
+    font-size: 15px;
+    padding: 10px 20px;
+}
+
+.btnSubmit:hover{
+    background-color: black;
+    transition: 200ms;
+}
+
+@media only screen and (max-width: 768px) {
+    .divContainer{
+        padding: 7% 9%;
+    }
+}
