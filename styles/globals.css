@@ -42,3 +42,8 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.lazy-load-image-background.blur.lazy-load-image-loaded {
+  height: 100%;
+  width: 100%;
+}
