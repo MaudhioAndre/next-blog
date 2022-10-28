@@ -28,6 +28,9 @@ masks.Time = "d mmmm yyyy";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 export default function Home(props) {
   const [blog, setBlog] = useState(props.blog || null);
   const [cariKonten, setCariKonten] = useState("");
@@ -216,7 +219,8 @@ export default function Home(props) {
                       <div className={styles.imgContainer}>
                         {data.loadImage == 0 ? (
                           <div className={styles.loadContainer}>
-                          <div className="loader"></div>
+                          {/* <div className="loader"></div> */}
+                          <Skeleton width={"250px"} height={"130px"} count={1} />
                           </div>
                         ) : (
                           <Image
